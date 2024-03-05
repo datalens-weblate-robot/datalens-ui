@@ -123,7 +123,8 @@ export const Chart = (props: ChartNoWidgetProps) => {
 
     const [initialParams, setInitialParams] = React.useState<StringParams>({});
 
-    const renderPluginLoader = disableChartLoader ? () => null : undefined;
+    // TODO: replace the expression for hiding loader after CHARTS-7922
+    const renderPluginLoader = disableChartLoader ? () => <div></div> : undefined;
 
     /**
      * for correct cancellation on rerender & changed request params & data props
