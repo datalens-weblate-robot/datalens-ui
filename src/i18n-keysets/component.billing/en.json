@@ -5,8 +5,9 @@
   "card_billing_rate_title": "Текущий тариф",
   "card_btn_change_billing_rate": "Сменить тариф",
   "card_org_title": "Организация",
-  "community_description": "Для небольших команд и некоммерческих проектов",
+  "community_description": "Для небольших команд <br></br> и некоммерческих проектов",
   "community_price_description": "без ограничений на пользователей",
   "community_title_price": "Бесплатно",
+  "current_rate_btn": "Current rate",
   "switch_rate_btn": "Перейти"
 }
