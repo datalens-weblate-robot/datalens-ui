@@ -5,9 +5,20 @@
   "card_billing_rate_title": "Текущий тариф",
   "card_btn_change_billing_rate": "Сменить тариф",
   "card_org_title": "Организация",
+  "community_analytical_computing_sql-label": "Аналитические вычисления и SQL",
+  "community_authentication_using_yandex_id-info": "Аутентификация с помощью Яндекс ID",
+  "community_authentication_using_yandex_id-label": "Аутентификация с помощью Яндекс ID",
   "community_description": "Для небольших команд <br></br> и некоммерческих проектов",
+  "community_description_data_model-label": "Описание модели данных",
+  "community_designer_charts_dashboards-label": "Конструктор чартов и дашбордов",
+  "community_no_restrictions_data_in_source-label": "Без ограничений на объем данных в источнике",
   "community_price_description": "без ограничений на пользователей",
+  "community_role_model_access_rights-label": "Ролевая модель прав доступа",
+  "community_standard_support-label": "Стандартная <link>поддержка</link>",
   "community_title_price": "Бесплатно",
   "current_rate_btn": "Текущий тариф",
-  "switch_rate_btn": "Перейти"
+  "switch_rate_btn": "Перейти",
+  "toast-bind-card_label_error-title": "Не удалось привязать карту",
+  "toast-creating_label_success-invoice-msg": "На Ваш e-mail будет отправлено письмо с дальнейшими инструкциями",
+  "toast-creating_label_success-title": "Платежный аккаунт создается"
 }
