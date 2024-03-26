@@ -31,6 +31,7 @@
   "community_title_capability": "Все базовые возможности, включая",
   "community_title_price": "Бесплатно",
   "current_rate_btn": "Текущий тариф",
+  "next_current_rate-btn": "Тариф со следующего месяца",
   "switch_rate_btn": "Перейти",
   "toast-bind-card_label_error-title": "Не удалось привязать карту",
   "toast-creating_label_success-invoice-msg": "На Ваш e-mail будет отправлено письмо с дальнейшими инструкциями",
