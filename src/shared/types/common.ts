@@ -252,6 +252,7 @@ export interface Entry {
     scope: EntryScope;
     type: EntryType;
     data: EntryData;
+    revId: string;
     links: Dictionary<string>;
     meta: object;
     workbookId?: string;
