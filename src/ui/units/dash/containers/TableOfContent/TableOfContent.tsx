@@ -3,6 +3,7 @@ import React from 'react';
 import {Xmark} from '@gravity-ui/icons';
 import {Icon, Sheet} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
+import type {Hash} from 'history';
 import {useShallowEqualSelector} from 'hooks';
 import {I18n} from 'i18n';
 import type {DatalensGlobalState} from 'index';
@@ -36,7 +37,33 @@ const scrollIntoViewOptions: ScrollIntoViewOptions = {behavior: 'smooth'};
 const dispatchResizeTimeout = 200;
 const scrollDelay = 300;
 
-const TableOfContent: React.FC = React.memo(() => {
+const getHash = ({
+    itemTitle,
+    hash,
+    disableTitleHash,
+}: {
+    itemTitle?: string;
+    hash: Hash;
+    disableTitleHash?: boolean;
+}) => {
+    if (disableTitleHash) {
+        return hash;
+    }
+
+    return itemTitle ? `#${encodeURIComponent(itemTitle)}` : '';
+};
+
+const scrollIntoViewWithTimeout = (itemId: string) => {
+    setTimeout(
+        () => scrollIntoView(itemId, scrollIntoViewOptions),
+        // to have time to change the height of the react-grid-layout (200ms)
+        // DashKit rendering ended after location change (with manual page refresh) (50-70ms)
+        // small margin
+        scrollDelay,
+    );
+};
+
+const TableOfContent: React.FC<{disableTitleHash?: boolean}> = React.memo(({disableTitleHash}) => {
     const dispatch = useDispatch();
     const location = useLocation();
 
@@ -62,15 +89,18 @@ const TableOfContent: React.FC = React.memo(() => {
     );
 
     const handleItemClick = React.useCallback(
-        (tabId: string) => () => {
+        (tabId: string, itemTitle: string) => () => {
             if (!isSelectedTab(tabId)) {
                 dispatch(setPageTab(tabId));
             }
             if (DL.IS_MOBILE) {
                 handleToggleTableOfContent();
             }
+            if (disableTitleHash) {
+                scrollIntoViewWithTimeout(encodeURIComponent(itemTitle));
+            }
         },
-        [dispatch, isSelectedTab, handleToggleTableOfContent],
+        [isSelectedTab, disableTitleHash, dispatch, handleToggleTableOfContent],
     );
 
     const handleSheetClose = () => {
@@ -89,22 +119,16 @@ const TableOfContent: React.FC = React.memo(() => {
                           tab: tabId,
                           state: getHashStateParam(hashStates, tabId),
                       }),
-            hash: itemTitle ? `#${encodeURIComponent(itemTitle)}` : '',
+            hash: getHash({itemTitle, hash: location.hash, disableTitleHash}),
         }),
-        [hashStates, isSelectedTab, location],
+        [disableTitleHash, hashStates, isSelectedTab, location],
     );
 
     React.useEffect(() => {
-        if (location.hash) {
-            setTimeout(
-                () => scrollIntoView(location.hash.replace('#', ''), scrollIntoViewOptions),
-                // to have time to change the height of the react-grid-layout (200ms)
-                // DashKit rendering ended after location change (with manual page refresh) (50-70ms)
-                // small margin
-                scrollDelay,
-            );
+        if (location.hash && !disableTitleHash) {
+            scrollIntoViewWithTimeout(location.hash.replace('#', ''));
         }
-    }, [location.hash]);
+    }, [location.hash, disableTitleHash]);
 
     React.useEffect(() => {
         // to recalculate ReactGridLayout
@@ -129,7 +153,7 @@ const TableOfContent: React.FC = React.memo(() => {
                             <Link
                                 to={getLinkTo(tab.id, item.title)}
                                 className={b('title', {item: true})}
-                                onClick={handleItemClick(tab.id)}
+                                onClick={handleItemClick(tab.id, item.title)}
                                 key={item.id}
                             >
                                 {item.title}
