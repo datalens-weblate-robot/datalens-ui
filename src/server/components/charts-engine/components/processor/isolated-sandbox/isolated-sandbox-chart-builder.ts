@@ -4,6 +4,7 @@ import ivm from 'isolated-vm';
 
 import type {DashWidgetConfig, FeatureConfig} from '../../../../../../shared';
 import {EDITOR_TYPE_CONFIG_TABS, Feature} from '../../../../../../shared';
+import {registry} from '../../../../../registry';
 import type {ChartsEngine} from '../../../index';
 import type {ResolvedConfig} from '../../storage/types';
 import {Processor} from '../index';
@@ -49,6 +50,10 @@ export const getIsolatedSandboxChartBuilder = async (
     } = args;
     const type = config.meta.stype;
     let shared: Record<string, any>;
+    const getAvailablePalettesMap = registry.common.functions.get('getAvailablePalettesMap');
+
+    const palettes = getAvailablePalettesMap();
+
     const isolate = new ivm.Isolate({memoryLimit: 1024});
     const context = isolate.createContextSync();
     context.evalSync(
@@ -57,6 +62,7 @@ export const getIsolatedSandboxChartBuilder = async (
          let __usedParams;
          let __runtimeMetadata = {userParamsOverride: undefined};
          let __features = JSON.parse('${JSON.stringify(serverFeatures)}');
+         let __palettes = JSON.parse('${JSON.stringify(palettes)}');
     `,
     );
 
