@@ -170,6 +170,7 @@ export default {
             enabled: isTrueArg(process.env.HC),
             external: true,
             domain: process.env.HC_ENDPOINT || 'code.highcharts.com',
+            protocol: process.env.HC_PROTOCOL || 'https',
             modules: process.env.HC_MODULES
                 ? process.env.HC_MODULES.split(',').map((m) => m.trim())
                 : [
@@ -222,5 +223,5 @@ export default {
     serviceClientId: process.env.SERVICE_CLIENT_ID || '',
     serviceClientSecret: process.env.SERVICE_CLIENT_SECRET || '',
 
-    runEndpoint: '/api/run',
+    apiPrefix: '/api',
 };

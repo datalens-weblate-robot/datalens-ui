@@ -530,7 +530,7 @@ class ChartsDataProvider implements DataProvider<ChartsProps, ChartsData, Cancel
     }
 
     private settings: Settings = {
-        endpoint: DL.ENDPOINTS.chartkitDefault,
+        endpoint: '/',
         lang: 'ru',
         noRetry: false,
     };
@@ -732,9 +732,12 @@ class ChartsDataProvider implements DataProvider<ChartsProps, ChartsData, Cancel
             headers[DL_EMBED_TOKEN_HEADER] = getSecureEmbeddingToken();
         }
 
+        // TODO: use only api prefix
+        const url = DL.API_PREFIX ? `${DL.API_PREFIX}/run` : DL.RUN_ENDPOINT;
+
         return axiosInstance(
             this.prepareRequestConfig({
-                url: `${this.requestEndpoint}${DL.RUN_ENDPOINT}`,
+                url: `${this.requestEndpoint}${url}`,
                 method: 'post',
                 ...requestOptions,
                 headers,
