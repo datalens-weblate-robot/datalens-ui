@@ -202,7 +202,6 @@ INSERT INTO public.entries (scope, type, key, inner_meta, created_by, created_at
 INSERT INTO public.entries (scope, type, key, inner_meta, created_by, created_at, updated_by, updated_at, is_deleted, deleted_at, hidden, display_key, entry_id, saved_id, published_id, tenant_id, name, sort_name, public, unversioned_data, workbook_id, mirrored) VALUES ('dash', '', '1788542674546983937/screenshot tests :: dash and widgets', NULL, 'uid:systemId', '2024-10-03 14:15:01.553506+00', 'uid:systemId', '2024-10-03 14:15:30.639492+00', false, NULL, false, '1788542674546983937/Screenshot tests :: dash and widgets', 1788542674546983937, 1792195780799366228, 1792195780799366228, 'common', 'screenshot tests :: dash and widgets', '\x73637265656e73686f74207465737473203a3a206461736820616e642077696467657473', false, '{}', 1540491943966934028, false);
 INSERT INTO public.entries (scope, type, key, inner_meta, created_by, created_at, updated_by, updated_at, is_deleted, deleted_at, hidden, display_key, entry_id, saved_id, published_id, tenant_id, name, sort_name, public, unversioned_data, workbook_id, mirrored) VALUES ('dash', '', '1829094472189740033/fixed header tests', NULL, 'uid:systemId', '2024-11-28 13:04:12.527369+00', 'uid:systemId', '2024-11-28 13:04:12.527369+00', false, NULL, false, '1829094472189740033/Fixed header tests', 1829094472189740033, 1829105048731255831, 1829105048731255831, 'common', 'fixed header tests', '\x666978656420686561646572207465737473', false, '{}', 1540491943966934028, false);
 
-
 ALTER TABLE public.entries ENABLE TRIGGER ALL;
 
 
