@@ -172,6 +172,13 @@ type DashkitGroupRenderWithContextProps = DashkitGroupRenderProps & {context: Me
 type GetPreparedCopyItemOptions<T extends object = {}> = (
     itemToCopy: PreparedCopyItemOptions<T>,
 ) => PreparedCopyItemOptions<T>;
+type DashKitGroupWithContextProps = Omit<DashKitGroup, 'render'> & {
+    render?: (
+        id: string,
+        children: React.ReactNode,
+        props: DashkitGroupRenderWithContextProps,
+    ) => React.ReactNode;
+};
 
 const GROUPS_WEIGHT = {
     [FIXED_GROUP_HEADER_ID]: 2,
