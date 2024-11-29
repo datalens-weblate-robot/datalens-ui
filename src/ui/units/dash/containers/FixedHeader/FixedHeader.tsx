@@ -126,6 +126,7 @@ export const FixedHeaderControls: React.FC<FixedHeaderControlsProps> = (props) =
     return (
         <div ref={placeholderRef} className={b('controls-placeholder', {hidden: !content})}>
             <div
+                data-qa={FixedHeaderQa.StaticFixedHeaderGroupWrapper}
                 style={style}
                 className={b('controls', {
                     fixed: isFixed && !editMode,
@@ -133,7 +134,10 @@ export const FixedHeaderControls: React.FC<FixedHeaderControlsProps> = (props) =
                 })}
                 data-qa={FixedHeaderQa.Controls}
             >
-                <div className={b('controls-grid')}>
+                <div
+                    className={b('controls-grid')}
+                    data-qa={FixedHeaderQa.StaticFixedHeaderGroupContent}
+                >
                     {content}
                     <div className={b('controls-settings')}>{props.controls}</div>
                 </div>
@@ -206,6 +210,7 @@ export const FixedHeaderContainer: React.FC<FixedHeaderContainerProps> = (props)
             style={{height: containerHeight}}
         >
             <div
+                data-qa={FixedHeaderQa.HidableFixedHeaderGroupWrapper}
                 ref={containerRef}
                 style={style}
                 className={b('container', {
@@ -215,7 +220,12 @@ export const FixedHeaderContainer: React.FC<FixedHeaderContainerProps> = (props)
                 })}
                 data-qa={FixedHeaderQa.Container}
             >
-                <div className={b('container-wrapper')}>{content}</div>
+                <div
+                    data-qa={FixedHeaderQa.HidableFixedHeaderGroupContent}
+                    className={b('container-wrapper', {'edit-mode': editMode})}
+                >
+                    {content}
+                </div>
             </div>
         </div>
     );
