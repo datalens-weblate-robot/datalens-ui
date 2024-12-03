@@ -9,6 +9,7 @@ import './FixedHeader.scss';
 
 type CommonFixedHeaderProps = {
     editMode: boolean;
+    wrapperRef?: React.RefObject<HTMLDivElement>;
 };
 
 type FixedHeaderControlsProps = CommonFixedHeaderProps & {
@@ -110,7 +111,6 @@ export const FixedHeaderControls: React.FC<FixedHeaderControlsProps> = ({
     return (
         <React.Fragment>
             <div
-                data-qa={FixedHeaderQa.StaticFixedHeaderGroupContent}
                 className={b('controls', {
                     'edit-mode': editMode,
                     hidden: isEmpty && !editMode,
@@ -142,11 +142,11 @@ export const FixedHeaderContainer: React.FC<FixedHeaderContainerProps> = ({
 
     return (
         <div
-            data-qa={FixedHeaderQa.HidableFixedHeaderGroupContent}
             className={b('container', {
                 'edit-mode': editMode,
                 hidden: isEmpty && !editMode,
             })}
+            data-qa={FixedHeaderQa.Container}
         >
             {content}
         </div>

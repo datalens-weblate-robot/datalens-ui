@@ -9,7 +9,6 @@ import type {
     ConfigItem,
     ConfigLayout,
     DashKit as DashKitComponent,
-    DashKitGroup,
     DashKitProps,
     DashkitGroupRenderProps,
     ItemDropProps,
