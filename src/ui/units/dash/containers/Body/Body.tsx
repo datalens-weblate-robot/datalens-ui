@@ -701,20 +701,9 @@ class Body extends React.PureComponent<BodyProps> {
                     <Icon data={isCollapsed ? ArrowChevronDown : ArrowChevronUp} />
                 </Button>
             );
-        } else {
-            return (
-                <Button
-                    onClick={this.toggleFixedHeader}
-                    view="flat"
-                    size="xl"
-                    width="max"
-                    pin="brick-round"
-                    disabled={true}
-                >
-                    <Icon data={Pin} />
-                </Button>
-            );
         }
+
+        return null;
     };
 
     renderFixedGroupHeader = (
