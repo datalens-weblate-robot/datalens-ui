@@ -33,6 +33,7 @@ import PaletteEditor from 'libs/DatalensChartkit/components/Palette/PaletteEdito
 import logger from 'libs/logger';
 import {getSdk} from 'libs/schematic-sdk';
 import debounce from 'lodash/debounce';
+import {createPortal} from 'react-dom';
 import type {ResolveThunks} from 'react-redux';
 import {connect} from 'react-redux';
 import type {RouteComponentProps} from 'react-router-dom';
@@ -56,7 +57,6 @@ import {
     DASHKIT_COLS_AMOUNT,
     FIXED_GROUP_CONTAINER_ID,
     FIXED_GROUP_HEADER_ID,
-    FIXED_HEADER_GROUP_LINE_MAX_ROWS,
 } from 'ui/components/DashKit/constants';
 import {getDashKitMenu} from 'ui/components/DashKit/helpers';
 import {showToast} from 'ui/store/actions/toaster';
@@ -111,7 +111,11 @@ import {
 } from '../../store/selectors/dashTypedSelectors';
 import {getPropertiesWithResizeHandles} from '../../utils/dashkitProps';
 import {DashError} from '../DashError/DashError';
-import {FixedHeaderContainer, FixedHeaderControls} from '../FixedHeader/FixedHeader';
+import {
+    FixedHeaderContainer,
+    FixedHeaderControls,
+    FixedHeaderWrapper,
+} from '../FixedHeader/FixedHeader';
 import TableOfContent from '../TableOfContent/TableOfContent';
 import {Tabs} from '../Tabs/Tabs';
 
@@ -274,14 +278,7 @@ class Body extends React.PureComponent<BodyProps> {
             {
                 id: FIXED_GROUP_HEADER_ID,
                 render: this.renderFixedGroupHeader,
-                gridProperties: (props) => {
-                    return {
-                        ...props,
-                        maxRows: FIXED_HEADER_GROUP_LINE_MAX_ROWS,
-                        autoSize: false,
-                        compactType: 'horizontal-nowrap',
-                    };
-                },
+                gridProperties: getPropertiesWithResizeHandles,
             },
             {
                 id: FIXED_GROUP_CONTAINER_ID,
@@ -488,9 +485,7 @@ class Body extends React.PureComponent<BodyProps> {
                     }, DASHKIT_COLS_AMOUNT);
 
                     const parentId =
-                        itemCopy.h <= FIXED_HEADER_GROUP_LINE_MAX_ROWS && itemCopy.w <= leftSpace
-                            ? FIXED_GROUP_HEADER_ID
-                            : FIXED_GROUP_CONTAINER_ID;
+                        itemCopy.w <= leftSpace ? FIXED_GROUP_HEADER_ID : FIXED_GROUP_CONTAINER_ID;
 
                     movedItem = {
                         ...itemCopy,
@@ -663,23 +658,24 @@ class Body extends React.PureComponent<BodyProps> {
         if (isEmpty && !hasFixedContainerElements && this.props.mode !== Mode.Edit) {
             return null;
         }
-        const {fixedHeaderCollapsed = false, isEmbeddedMode, isPublicMode} = params.context;
+        const {fixedHeaderCollapsed = false} = params.context;
 
-        return (
-            <FixedHeaderControls
-                wrapperRef={this._fixedHeaderControlsRef}
-                containerRef={this._fixedHeaderContainerRef}
-                isEmpty={isEmpty}
-                key={`${id}_${this.props.tabId}`}
-                isCollapsed={fixedHeaderCollapsed}
-                editMode={params.editMode}
-                controls={this.renderFixedControls(fixedHeaderCollapsed, hasFixedContainerElements)}
-                isEmbedded={isEmbeddedMode}
-                isPublic={isPublicMode}
-            >
-                {children}
-            </FixedHeaderControls>
-        );
+        return this._fixedHeaderControlsRef.current
+            ? createPortal(
+                  <FixedHeaderControls
+                      isEmpty={isEmpty}
+                      key={`${id}_${this.props.tabId}`}
+                      editMode={params.editMode}
+                      controls={this.renderFixedControls(
+                          fixedHeaderCollapsed,
+                          hasFixedContainerElements,
+                      )}
+                  >
+                      {children}
+                  </FixedHeaderControls>,
+                  this._fixedHeaderControlsRef.current,
+              )
+            : null;
     };
 
     renderFixedGroupContainer = (
@@ -693,22 +689,19 @@ class Body extends React.PureComponent<BodyProps> {
         if (isEmpty && !hasFixedHeaderElements && this.props.mode !== Mode.Edit) {
             return null;
         }
-        const {fixedHeaderCollapsed = false, isEmbeddedMode, isPublicMode} = params.context;
 
-        return (
-            <FixedHeaderContainer
-                wrapperRef={this._fixedHeaderContainerRef}
-                controlsRef={this._fixedHeaderControlsRef}
-                isEmpty={isEmpty}
-                key={`${id}_${this.props.tabId}`}
-                isCollapsed={fixedHeaderCollapsed}
-                editMode={params.editMode}
-                isEmbedded={isEmbeddedMode}
-                isPublic={isPublicMode}
-            >
-                {children}
-            </FixedHeaderContainer>
-        );
+        return this._fixedHeaderContainerRef.current
+            ? createPortal(
+                  <FixedHeaderContainer
+                      isEmpty={isEmpty}
+                      key={`${id}_${this.props.tabId}`}
+                      editMode={params.editMode}
+                  >
+                      {children}
+                  </FixedHeaderContainer>,
+                  this._fixedHeaderContainerRef.current,
+              )
+            : null;
     };
 
     storageHandler = () => {
@@ -879,6 +872,7 @@ class Body extends React.PureComponent<BodyProps> {
         const {
             mode,
             settings,
+            tabId,
             tabs,
             tabData,
             handlerEditClick,
@@ -889,6 +883,9 @@ class Body extends React.PureComponent<BodyProps> {
 
         const context = this.getContext();
 
+        const fixedHeaderCollapsed = tabId ? this.state.fixedHeaderCollapsed[tabId] : false;
+        const isEditMode = mode === Mode.Edit;
+
         const tabDataConfig = DL.IS_MOBILE
             ? this.getMobileLayout()
             : (tabData as DashKitProps['config'] | null);
@@ -898,42 +895,56 @@ class Body extends React.PureComponent<BodyProps> {
         return isEmptyTab && !isGlobalDragging ? (
             <EmptyState
                 canEdit={this.props.canEdit}
-                isEditMode={mode === Mode.Edit}
+                isEditMode={isEditMode}
                 isTabView={!settings.hideTabs && tabs.length > 1}
                 onEditClick={handlerEditClick}
                 isEditModeLoading={isEditModeLoading}
             />
         ) : (
-            <DashKit
-                ref={this.dashKitRef}
-                config={tabDataConfig as DashKitProps['config']}
-                editMode={mode === Mode.Edit}
-                focusable={true}
-                onDrop={this.onDropElement}
-                itemsStateAndParams={this.props.hashStates as DashKitProps['itemsStateAndParams']}
-                groups={
-                    Utils.isEnabledFeature(Feature.EnableDashFixedHeader) ? this.groups : undefined
-                }
-                context={context}
-                getPreparedCopyItemOptions={
-                    this
-                        .getPreparedCopyItemOptionsFn satisfies GetPreparedCopyItemOptions<any> as GetPreparedCopyItemOptions<{}>
-                }
-                onCopyFulfill={this.onItemCopy}
-                onItemEdit={this.props.openItemDialogAndSetData}
-                onChange={this.onChange}
-                settings={dashkitSettings}
-                defaultGlobalParams={settings.globalParams}
-                globalParams={globalParams}
-                overlayControls={this.getOverlayControls()}
-                overlayMenuItems={this.getOverlayMenu()}
-                skipReload={this.props.skipReload}
-                isNewRelations={this.props.isNewRelations}
-                onItemMountChange={this.handleItemMountChange}
-                onItemRender={this.handleItemRender}
-                hideErrorDetails={this.props.hideErrorDetails}
-                dataProviderContextGetter={this.dataProviderContextGetter}
-            />
+            <React.Fragment>
+                <FixedHeaderWrapper
+                    controlsRef={this._fixedHeaderControlsRef}
+                    containerRef={this._fixedHeaderContainerRef}
+                    isCollapsed={fixedHeaderCollapsed}
+                    editMode={isEditMode}
+                    isEmbedded={context.isEmbeddedMode}
+                    isPublic={context.isPublicMode}
+                />
+                <DashKit
+                    ref={this.dashKitRef}
+                    config={tabDataConfig as DashKitProps['config']}
+                    editMode={isEditMode}
+                    focusable={true}
+                    onDrop={this.onDropElement}
+                    itemsStateAndParams={
+                        this.props.hashStates as DashKitProps['itemsStateAndParams']
+                    }
+                    groups={
+                        Utils.isEnabledFeature(Feature.EnableDashFixedHeader)
+                            ? this.groups
+                            : undefined
+                    }
+                    context={context}
+                    getPreparedCopyItemOptions={
+                        this
+                            .getPreparedCopyItemOptionsFn satisfies GetPreparedCopyItemOptions<any> as GetPreparedCopyItemOptions<{}>
+                    }
+                    onCopyFulfill={this.onItemCopy}
+                    onItemEdit={this.props.openItemDialogAndSetData}
+                    onChange={this.onChange}
+                    settings={dashkitSettings}
+                    defaultGlobalParams={settings.globalParams}
+                    globalParams={globalParams}
+                    overlayControls={this.getOverlayControls()}
+                    overlayMenuItems={this.getOverlayMenu()}
+                    skipReload={this.props.skipReload}
+                    isNewRelations={this.props.isNewRelations}
+                    onItemMountChange={this.handleItemMountChange}
+                    onItemRender={this.handleItemRender}
+                    hideErrorDetails={this.props.hideErrorDetails}
+                    dataProviderContextGetter={this.dataProviderContextGetter}
+                />
+            </React.Fragment>
         );
     };
 
