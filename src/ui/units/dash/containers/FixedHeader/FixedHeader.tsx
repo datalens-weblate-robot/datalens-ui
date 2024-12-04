@@ -9,7 +9,6 @@ import './FixedHeader.scss';
 
 type CommonFixedHeaderProps = {
     editMode: boolean;
-    wrapperRef?: React.RefObject<HTMLDivElement>;
 };
 
 type FixedHeaderControlsProps = CommonFixedHeaderProps & {
