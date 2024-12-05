@@ -177,11 +177,10 @@ export function FixedHeaderWrapper({
     const topOffset = calculateOffset({isEmbedded, isPublic});
     const {isFixed, leftOffset, width} = useFixedHeaderRef(rootRef, topOffset);
     const style = isFixed && !editMode ? {left: leftOffset, top: topOffset, width} : {};
+
     const isRenderEmpty =
-        controlsRef.current?.children.length === 0 /* ||
-            controlsRef.current?.getBoundingClientRect().height === 0 */ &&
-        containerRef.current?.children.length === 0; /* ||
-            containerRef.current?.getBoundingClientRect().height === 0 */
+        controlsRef.current?.getBoundingClientRect().height === 0 &&
+        containerRef.current?.getBoundingClientRect().height === 0;
 
     React.useEffect(() => {
         if (isRenderEmpty) {
@@ -213,11 +212,10 @@ export function FixedHeaderWrapper({
 
     return (
         <div
-            className={b()}
+            className={b({hidden: isRenderEmpty})}
             ref={rootRef}
             style={{
-                height: isFixed ? containerHeight : undefined,
-                margin: containerHeight === 0 ? 0 : undefined,
+                height: isFixed ? containerHeight : 'auto',
             }}
         >
             <div
