@@ -651,7 +651,7 @@ class Body extends React.PureComponent<BodyProps> {
                 <DropdownMenu
                     switcherWrapperClassName={b('fixed-header-settings-switcher')}
                     renderSwitcher={(props) => (
-                        <Button {...props} view="raised" size="xl" width="max" pin="brick-round">
+                        <Button {...props} view="raised" size="xl" width="max" pin="round-brick">
                             <Icon size={16} data={Gear} />
                         </Button>
                     )}
@@ -686,7 +686,7 @@ class Body extends React.PureComponent<BodyProps> {
                     view="flat"
                     size="xl"
                     width="max"
-                    pin="brick-round"
+                    pin="round-brick"
                     title={i18n(
                         'dash.main.view',
                         isCollapsed ? 'tooltip_expand-fixed-group' : 'tooltip_collapse-fixed-group',
@@ -979,40 +979,42 @@ class Body extends React.PureComponent<BodyProps> {
                     isEmbedded={context.isEmbeddedMode}
                     isPublic={context.isPublicMode}
                 />
-                <DashKit
-                    ref={this.dashKitRef}
-                    config={tabDataConfig as DashKitProps['config']}
-                    editMode={isEditMode}
-                    focusable={true}
-                    onDrop={this.onDropElement}
-                    itemsStateAndParams={
-                        this.props.hashStates as DashKitProps['itemsStateAndParams']
-                    }
-                    groups={
-                        Utils.isEnabledFeature(Feature.EnableDashFixedHeader)
-                            ? this.groups
-                            : undefined
-                    }
-                    context={context}
-                    getPreparedCopyItemOptions={
-                        this
-                            .getPreparedCopyItemOptionsFn satisfies GetPreparedCopyItemOptions<any> as GetPreparedCopyItemOptions<{}>
-                    }
-                    onCopyFulfill={this.onItemCopy}
-                    onItemEdit={this.props.openItemDialogAndSetData}
-                    onChange={this.onChange}
-                    settings={dashkitSettings}
-                    defaultGlobalParams={settings.globalParams}
-                    globalParams={globalParams}
-                    overlayControls={this.getOverlayControls()}
-                    overlayMenuItems={this.getOverlayMenu()}
-                    skipReload={this.props.skipReload}
-                    isNewRelations={this.props.isNewRelations}
-                    onItemMountChange={this.handleItemMountChange}
-                    onItemRender={this.handleItemRender}
-                    hideErrorDetails={this.props.hideErrorDetails}
-                    dataProviderContextGetter={this.dataProviderContextGetter}
-                />
+                {this._fixedHeaderControlsRef.current && this._fixedHeaderContainerRef.current ? (
+                    <DashKit
+                        ref={this.dashKitRef}
+                        config={tabDataConfig as DashKitProps['config']}
+                        editMode={isEditMode}
+                        focusable={true}
+                        onDrop={this.onDropElement}
+                        itemsStateAndParams={
+                            this.props.hashStates as DashKitProps['itemsStateAndParams']
+                        }
+                        groups={
+                            Utils.isEnabledFeature(Feature.EnableDashFixedHeader)
+                                ? this.groups
+                                : undefined
+                        }
+                        context={context}
+                        getPreparedCopyItemOptions={
+                            this
+                                .getPreparedCopyItemOptionsFn satisfies GetPreparedCopyItemOptions<any> as GetPreparedCopyItemOptions<{}>
+                        }
+                        onCopyFulfill={this.onItemCopy}
+                        onItemEdit={this.props.openItemDialogAndSetData}
+                        onChange={this.onChange}
+                        settings={dashkitSettings}
+                        defaultGlobalParams={settings.globalParams}
+                        globalParams={globalParams}
+                        overlayControls={this.getOverlayControls()}
+                        overlayMenuItems={this.getOverlayMenu()}
+                        skipReload={this.props.skipReload}
+                        isNewRelations={this.props.isNewRelations}
+                        onItemMountChange={this.handleItemMountChange}
+                        onItemRender={this.handleItemRender}
+                        hideErrorDetails={this.props.hideErrorDetails}
+                        dataProviderContextGetter={this.dataProviderContextGetter}
+                    />
+                ) : null}
             </React.Fragment>
         );
     };

@@ -91,6 +91,9 @@ export enum FixedHeaderQa {
     StaticFixedHeaderGroupContent = 'static-fixed-header-group-content',
     HidableFixedHeaderGroupWrapper = 'hidable-fixed-header-group-wrapper',
     HidableFixedHeaderGroupContent = 'hidable-fixed-header-group-content',
+
+    Container = 'dash-fixed-header-containter',
+    Controls = 'dash-fixed-header-controls',
 }
 
 export enum DashRelationTypes {

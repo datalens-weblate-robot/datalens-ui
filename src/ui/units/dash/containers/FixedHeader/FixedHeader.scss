@@ -49,7 +49,7 @@
                 padding-inline: var(--dash-inline-padding);
             }
             #{$class}__controls-settings {
-                left: 0;
+                right: 0;
             }
         }
 
@@ -61,16 +61,12 @@
     &_hidden {
         margin: 0;
         height: 0;
-
-        #{$class}__controls-settings {
-            top: 0;
-        }
     }
 
     &__controls-settings {
         width: 20px;
         position: absolute;
-        left: calc(-1 * var(--dash-inline-padding));
+        right: calc(-1 * var(--dash-inline-padding));
         top: var(--g-spacing-2);
     }
 
