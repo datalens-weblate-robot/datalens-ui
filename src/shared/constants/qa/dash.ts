@@ -110,11 +110,6 @@ export enum DashBodyQa {
     ContentWrapper = 'dash-body-content-wrapper',
 }
 
-export enum FixedHeaderQa {
-    Container = 'dash-fixed-header-containter',
-    Controls = 'dash-fixed-header-controls',
-}
-
 export enum DashTabsQA {
     Root = 'dash-tabs',
 }
