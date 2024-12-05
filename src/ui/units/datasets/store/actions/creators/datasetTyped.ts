@@ -15,12 +15,15 @@ import type {
 import {TIMEOUT_100_SEC, TIMEOUT_65_SEC} from 'shared';
 import type {GetPreviewResponse, ValidateDatasetResponse} from 'shared/schema';
 import {sdk} from 'ui';
+import {BI_ERRORS} from 'ui/constants';
+import {addEditHistoryPoint, resetEditHistoryUnit} from 'ui/store/actions/editHistory';
+import Utils from 'ui/utils';
 
 import type {ApplyData} from '../../../../../components/DialogFilter/DialogFilter';
 import logger from '../../../../../libs/logger';
 import {getSdk} from '../../../../../libs/schematic-sdk';
-import {TOASTERS_NAMES} from '../../../../../units/datasets/constants';
 import {getFilteredObject} from '../../../../../utils';
+import {DATASETS_EDIT_HISTORY_UNIT_ID, TOASTERS_NAMES} from '../../../constants';
 import {
     datasetContentSelector,
     datasetFieldsSelector,
@@ -37,6 +40,8 @@ import type {
     DatasetReduxAction,
     EditorItemToDisplay,
     FreeformSource,
+    SetEditHistoryState,
+    ToggleAllowanceSave,
     Update,
 } from '../../types';
 import * as DATASET_ACTION_TYPES from '../types/dataset';
@@ -45,8 +50,8 @@ import {updateDatasetByValidation} from './dataset';
 import {isContendChanged, prepareUpdates} from './utils';
 
 export type DatasetDispatch = ThunkDispatch<DatalensGlobalState, void, DatasetReduxAction>;
+export type GetState = () => DatalensGlobalState;
 
-type GetState = () => DatalensGlobalState;
 type ValidateDatasetArgs = {
     compareContent?: boolean;
     initial?: boolean;
@@ -71,8 +76,11 @@ export function setFreeformSources(freeformSources: FreeformSource[]) {
 }
 
 export function resetDatasetState() {
-    return {
-        type: DATASET_ACTION_TYPES.RESET_DATASET_STATE,
+    return (dispatch: Dispatch) => {
+        batch(() => {
+            dispatch(resetEditHistoryUnit({unitId: DATASETS_EDIT_HISTORY_UNIT_ID}));
+            dispatch({type: DATASET_ACTION_TYPES.RESET_DATASET_STATE});
+        });
     };
 }
 
@@ -83,22 +91,11 @@ export function renameDataset(key: string) {
     };
 }
 
-export function enableSaveDataset(): DatasetReduxAction {
+export function toggleSaveDataset(args: ToggleAllowanceSave['payload']): DatasetReduxAction {
+    const {enable = true, validationPending} = args;
     return {
         type: DATASET_ACTION_TYPES.TOGGLE_ALLOWANCE_SAVE,
-        payload: {
-            enable: true,
-        },
-    };
-}
-export function disableSaveDataset() {
-    return (dispatch: DatasetDispatch) => {
-        dispatch({
-            type: DATASET_ACTION_TYPES.TOGGLE_ALLOWANCE_SAVE,
-            payload: {
-                enable: false,
-            },
-        });
+        payload: {enable, validationPending},
     };
 }
 
@@ -289,7 +286,7 @@ export function toggleLoadPreviewByDefault(enable: boolean) {
                 payload: {enable},
             });
 
-            dispatch(enableSaveDataset());
+            dispatch(toggleSaveDataset({enable: true}));
         }
     };
 }
@@ -381,7 +378,7 @@ export function updateRLS(rls: {[key: string]: string}) {
             },
         });
 
-        dispatch(enableSaveDataset());
+        dispatch(toggleSaveDataset({enable: true}));
     };
 }
 
@@ -773,7 +770,7 @@ export function validateDataset({compareContent, initial = false}: ValidateDatas
             }
 
             if (!initial && activateSaveButton) {
-                dispatch(enableSaveDataset());
+                dispatch(toggleSaveDataset({enable: true}));
             }
         } catch (error) {
             if (!getSdk().isCancel(error)) {
@@ -790,9 +787,11 @@ export function validateDataset({compareContent, initial = false}: ValidateDatas
                 const activateSaveButton = compareContent
                     ? isContendChanged(prevContent, content)
                     : true;
+                const isFatalError =
+                    Utils.parseErrorResponse(error).code === BI_ERRORS.VALIDATION_FATAL;
 
-                if (!initial && error.status === 400 && activateSaveButton) {
-                    dispatch(enableSaveDataset());
+                if (!initial && error.status === 400 && activateSaveButton && !isFatalError) {
+                    dispatch(toggleSaveDataset({enable: true}));
                 }
 
                 dispatch({
@@ -805,5 +804,28 @@ export function validateDataset({compareContent, initial = false}: ValidateDatas
         }
 
         return returnUpdates;
+    };
+}
+
+export function setEditHistoryState(payload: SetEditHistoryState['payload']): SetEditHistoryState {
+    return {
+        type: DATASET_ACTION_TYPES.SET_EDIT_HISTORY_STATE,
+        payload,
+    };
+}
+
+export type AddEditHistoryPointDsArgs = {
+    stacked?: boolean;
+};
+
+export function addEditHistoryPointDs({stacked}: AddEditHistoryPointDsArgs = {}) {
+    return (dispatch: DatasetDispatch, getState: GetState) => {
+        dispatch(
+            addEditHistoryPoint({
+                unitId: DATASETS_EDIT_HISTORY_UNIT_ID,
+                newState: getState().dataset,
+                stacked,
+            }),
+        );
     };
 }
