@@ -110,7 +110,6 @@ export const FixedHeaderControls: React.FC<FixedHeaderControlsProps> = ({
     return (
         <React.Fragment>
             <div
-                data-qa={FixedHeaderQa.StaticFixedHeaderGroupContent}
                 className={b('controls', {
                     'edit-mode': editMode,
                     hidden: isEmpty && !editMode,
@@ -142,7 +141,7 @@ export const FixedHeaderContainer: React.FC<FixedHeaderContainerProps> = ({
 
     return (
         <div
-            data-qa={FixedHeaderQa.HidableFixedHeaderGroupContent}
+            data-qa={FixedHeaderQa.Container}
             className={b('container', {
                 'edit-mode': editMode,
                 hidden: isEmpty && !editMode,

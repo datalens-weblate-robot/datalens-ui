@@ -649,7 +649,7 @@ class Body extends React.PureComponent<BodyProps> {
                 <DropdownMenu
                     switcherWrapperClassName={b('fixed-header-settings-switcher')}
                     renderSwitcher={(props) => (
-                        <Button {...props} view="raised" size="xl" width="max" pin="brick-round">
+                        <Button {...props} view="raised" size="xl" width="max" pin="round-brick">
                             <Icon size={16} data={Gear} />
                         </Button>
                     )}
@@ -684,7 +684,7 @@ class Body extends React.PureComponent<BodyProps> {
                     view="flat"
                     size="xl"
                     width="max"
-                    pin="brick-round"
+                    pin="round-brick"
                     title={i18n(
                         'dash.main.view',
                         isCollapsed ? 'tooltip_expand-fixed-group' : 'tooltip_collapse-fixed-group',

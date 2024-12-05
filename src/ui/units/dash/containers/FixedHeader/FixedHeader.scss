@@ -70,7 +70,7 @@
     &__controls-settings {
         width: 20px;
         position: absolute;
-        left: calc(-1 * var(--dash-inline-padding));
+        right: calc(-1 * var(--dash-inline-padding));
         top: var(--g-spacing-2);
     }
 
