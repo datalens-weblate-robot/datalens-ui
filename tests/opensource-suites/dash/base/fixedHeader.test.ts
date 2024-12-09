@@ -28,43 +28,29 @@ datalensTest.describe('Fixed header', () => {
         const collapsibleStateToggleButton = fixedHeader.expandCollapseButton;
 
         await expect(collapsibleStateToggleButton).toBeVisible();
-        await expect(fixedHeader.staticFixedHeaderGroupContent).toBeVisible();
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeVisible();
-
-        const initialStaticFixedHeaderGroupVerticalOffset =
-            await fixedHeader.getStaticFixedHeaderGroupVerticalOffset();
+        await expect(fixedHeader.controls).toBeVisible();
+        await expect(fixedHeader.container).toBeVisible();
 
         // check that "fixed" header is not fixed without scrolling
-        expect(initialStaticFixedHeaderGroupVerticalOffset).toBeGreaterThan(actionPanelHeight);
-        expect(await fixedHeader.getHidableFixedHeaderGroupVerticalOffset()).toBeGreaterThan(
-            initialStaticFixedHeaderGroupVerticalOffset + actionPanelHeight,
-        );
+        expect(await fixedHeader.getWrapperVerticalOffset()).toBeGreaterThan(actionPanelHeight);
 
         await fixedHeader.toggleFixedHeaderCollapsibleState(); // collapse
 
         await expect(collapsibleStateToggleButton).toBeVisible();
-        await expect(fixedHeader.staticFixedHeaderGroupContent).toBeVisible();
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeHidden();
+        await expect(fixedHeader.controls).toBeVisible();
+        await expect(fixedHeader.container).toBeHidden();
 
         await page.mouse.wheel(0, 500);
 
         await expect(collapsibleStateToggleButton).toBeVisible();
-        await expect(fixedHeader.staticFixedHeaderGroupContent).toBeVisible();
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeHidden();
+        await expect(fixedHeader.controls).toBeVisible();
+        await expect(fixedHeader.container).toBeHidden();
 
-        expect(await fixedHeader.getStaticFixedHeaderGroupVerticalOffset()).toEqual(
-            actionPanelHeight,
-        );
+        expect(await fixedHeader.getWrapperVerticalOffset()).toEqual(actionPanelHeight);
 
         await fixedHeader.toggleFixedHeaderCollapsibleState(); // expand
 
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeVisible();
-
-        const staticFixedHeaderHeight =
-            (await fixedHeader.staticFixedHeaderGroupWrapper.boundingBox())?.height ?? 0;
-        expect(await fixedHeader.getHidableFixedHeaderGroupVerticalOffset()).toEqual(
-            actionPanelHeight + staticFixedHeaderHeight,
-        );
+        await expect(fixedHeader.container).toBeVisible();
     });
 
     datalensTest('With second group only', async ({page}: {page: Page}) => {
@@ -78,34 +64,29 @@ datalensTest.describe('Fixed header', () => {
         const collapsibleStateToggleButton = fixedHeader.expandCollapseButton;
 
         await expect(collapsibleStateToggleButton).toBeVisible();
-        await expect(fixedHeader.staticFixedHeaderGroupContent).toBeHidden();
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeVisible();
-
-        const initialStaticHidableHeaderGroupVerticalOffset =
-            await fixedHeader.getHidableFixedHeaderGroupVerticalOffset();
+        await expect(fixedHeader.controls).toBeHidden();
+        await expect(fixedHeader.container).toBeVisible();
 
         // check that "fixed" header is not fixed without scrolling
-        expect(initialStaticHidableHeaderGroupVerticalOffset).toBeGreaterThan(actionPanelHeight);
+        expect(await fixedHeader.getWrapperVerticalOffset()).toBeGreaterThan(actionPanelHeight);
 
         await fixedHeader.toggleFixedHeaderCollapsibleState(); // collapse
 
         await expect(collapsibleStateToggleButton).toBeVisible();
-        await expect(fixedHeader.staticFixedHeaderGroupContent).toBeHidden();
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeHidden();
+        await expect(fixedHeader.controls).toBeHidden();
+        await expect(fixedHeader.container).toBeHidden();
 
         await page.mouse.wheel(0, 500);
 
         await expect(collapsibleStateToggleButton).toBeVisible();
-        await expect(fixedHeader.staticFixedHeaderGroupContent).toBeHidden();
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeHidden();
+        await expect(fixedHeader.controls).toBeHidden();
+        await expect(fixedHeader.container).toBeHidden();
 
         await fixedHeader.toggleFixedHeaderCollapsibleState(); // expand
 
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeVisible();
+        await expect(fixedHeader.container).toBeVisible();
 
-        expect(await fixedHeader.getHidableFixedHeaderGroupVerticalOffset()).toEqual(
-            actionPanelHeight,
-        );
+        expect(await fixedHeader.getWrapperVerticalOffset()).toEqual(actionPanelHeight);
     });
     datalensTest('Header with overflown second group', async ({page}: {page: Page}) => {
         await openTestPage(page, getTabUrl(tabsIds.overflownSecondGroup));
@@ -118,39 +99,33 @@ datalensTest.describe('Fixed header', () => {
         const collapsibleStateToggleButton = fixedHeader.expandCollapseButton;
 
         await expect(collapsibleStateToggleButton).toBeVisible();
-        await expect(fixedHeader.staticFixedHeaderGroupContent).toBeVisible();
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeVisible();
+        await expect(fixedHeader.controls).toBeVisible();
+        await expect(fixedHeader.container).toBeVisible();
 
         const body = page.locator('body');
 
-        const initialStaticFixedHeaderGroupVerticalOffset =
-            await fixedHeader.getStaticFixedHeaderGroupVerticalOffset();
-
         // check that "fixed" header is not fixed without scrolling
-        expect(initialStaticFixedHeaderGroupVerticalOffset).toBeGreaterThan(actionPanelHeight);
-        expect(await fixedHeader.getHidableFixedHeaderGroupVerticalOffset()).toBeGreaterThan(
-            initialStaticFixedHeaderGroupVerticalOffset + actionPanelHeight,
-        );
+        expect(await fixedHeader.getWrapperVerticalOffset()).toBeGreaterThan(actionPanelHeight);
 
         await page.mouse.wheel(0, 500);
 
         const bodyScrollPositionBeforeCollapsing = (await body.boundingBox())?.y ?? 0;
         const fixedHeaderScrollPositionBeforeCollapsing =
-            (await fixedHeader.hidableFixedHeaderGroupContent.boundingBox())?.y ?? 0;
+            (await fixedHeader.container.boundingBox())?.y ?? 0;
 
-        await fixedHeader.hidableFixedHeaderGroupContent.hover();
+        await fixedHeader.container.hover();
         await page.mouse.wheel(0, 500);
 
         expect((await body.boundingBox())?.y).toEqual(bodyScrollPositionBeforeCollapsing);
-        expect((await fixedHeader.hidableFixedHeaderGroupContent.boundingBox())?.y).toEqual(
+        expect((await fixedHeader.container.boundingBox())?.y).toEqual(
             fixedHeaderScrollPositionBeforeCollapsing - 500,
         );
 
         await fixedHeader.toggleFixedHeaderCollapsibleState(); // collapse
 
         await expect(collapsibleStateToggleButton).toBeVisible();
-        await expect(fixedHeader.staticFixedHeaderGroupContent).toBeVisible();
-        await expect(fixedHeader.hidableFixedHeaderGroupContent).toBeHidden();
+        await expect(fixedHeader.controls).toBeVisible();
+        await expect(fixedHeader.container).toBeHidden();
 
         await page.mouse.wheel(0, 500);
         expect((await body.boundingBox())?.y).toEqual(bodyScrollPositionBeforeCollapsing - 500);

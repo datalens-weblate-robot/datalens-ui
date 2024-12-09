@@ -4,11 +4,10 @@ import {FixedHeaderQa} from '../../../src/shared';
 
 export class FixedHeader {
     static selectors = {
-        expandCollapseButton: slct(FixedHeaderQa.ExpandCollapseFixedHeaderButton),
-        staticFixedHeaderGroupWrapper: slct(FixedHeaderQa.StaticFixedHeaderGroupWrapper),
-        staticFixedHeaderGroupContent: slct(FixedHeaderQa.StaticFixedHeaderGroupContent),
-        hidableFixedHeaderGroupWrapper: slct(FixedHeaderQa.HidableFixedHeaderGroupWrapper),
-        hidableFixedHeaderGroupContent: slct(FixedHeaderQa.HidableFixedHeaderGroupContent),
+        expandCollapseButton: slct(FixedHeaderQa.ExpandCollapseButton),
+        wrapper: slct(FixedHeaderQa.Wrapper),
+        controls: slct(FixedHeaderQa.Controls),
+        container: slct(FixedHeaderQa.Container),
     };
 
     protected page: Page;
@@ -25,39 +24,15 @@ export class FixedHeader {
         return this.page.locator(FixedHeader.selectors.expandCollapseButton).click();
     }
 
-    get staticFixedHeaderGroupContent() {
-        return this.page.locator(FixedHeader.selectors.staticFixedHeaderGroupContent);
+    get controls() {
+        return this.page.locator(FixedHeader.selectors.controls);
     }
 
-    get hidableFixedHeaderGroupContent() {
-        return this.page.locator(FixedHeader.selectors.hidableFixedHeaderGroupContent);
+    get container() {
+        return this.page.locator(FixedHeader.selectors.container);
     }
 
-    get staticFixedHeaderGroupWrapper() {
-        return this.page.locator(FixedHeader.selectors.staticFixedHeaderGroupWrapper);
-    }
-
-    get hidableFixedHeaderGroupWrapper() {
-        return this.page.locator(FixedHeader.selectors.hidableFixedHeaderGroupWrapper);
-    }
-
-    async getStaticFixedHeaderGroupVerticalOffset() {
-        return (
-            (
-                await this.page
-                    .locator(FixedHeader.selectors.staticFixedHeaderGroupWrapper)
-                    .boundingBox()
-            )?.y ?? 0
-        );
-    }
-
-    async getHidableFixedHeaderGroupVerticalOffset() {
-        return (
-            (
-                await this.page
-                    .locator(FixedHeader.selectors.hidableFixedHeaderGroupWrapper)
-                    .boundingBox()
-            )?.y ?? 0
-        );
+    async getWrapperVerticalOffset() {
+        return (await this.page.locator(FixedHeader.selectors.wrapper).boundingBox())?.y ?? 0;
     }
 }

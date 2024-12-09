@@ -86,14 +86,10 @@ export enum DashCommonQa {
 }
 
 export enum FixedHeaderQa {
-    ExpandCollapseFixedHeaderButton = 'expand-collapse-fixed-header-button',
-    StaticFixedHeaderGroupWrapper = 'static-fixed-header-group-wrapper',
-    StaticFixedHeaderGroupContent = 'static-fixed-header-group-content',
-    HidableFixedHeaderGroupWrapper = 'hidable-fixed-header-group-wrapper',
-    HidableFixedHeaderGroupContent = 'hidable-fixed-header-group-content',
-
+    Wrapper = 'dash-fixed-header-wrapper',
     Container = 'dash-fixed-header-containter',
     Controls = 'dash-fixed-header-controls',
+    ExpandCollapseButton = 'dash-fixed-header-expand-collapse-button',
 }
 
 export enum DashRelationTypes {

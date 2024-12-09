@@ -691,7 +691,7 @@ class Body extends React.PureComponent<BodyProps> {
                         'dash.main.view',
                         isCollapsed ? 'tooltip_expand-fixed-group' : 'tooltip_collapse-fixed-group',
                     )}
-                    qa={FixedHeaderQa.ExpandCollapseFixedHeaderButton}
+                    qa={FixedHeaderQa.ExpandCollapseButton}
                 >
                     <Icon data={isCollapsed ? ArrowChevronDown : ArrowChevronUp} />
                 </Button>
